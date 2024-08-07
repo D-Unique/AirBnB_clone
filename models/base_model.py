@@ -11,7 +11,7 @@ class BaseModel:
                 if key == "__class__":
                     continue
                 elif key == "created_at" or key == "updated_at":
-                    setattr(self.key, datetime.strptime(value, time_format))
+                    setattr(self, key, datetime.strptime(value, time_format))
                 else:
                     setattr(self, key, value)
 
