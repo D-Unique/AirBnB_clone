@@ -42,8 +42,8 @@ class BaseModel:
     def to_dict(self):
         isintan = self.__dict__.copy()
         isintan["__class__"] = self.__class__.__name__
-        isintan["updated_at"] = self.updated_at
-        isintan["created_at"] = self.created_at
+        isintan["updated_at"] = self.updated_at.isoformat()
+        isintan["created_at"] = self.created_at.isoformat()
         return isintan
     def __str__(self):
         class_name = self.__class__.__name__
