@@ -2,6 +2,7 @@
 '''base_model module'''
 from datetime import datetime
 from uuid import uuid4
+import models
 
 class BaseModel:
     def __init__(self, *args, **kwargs):
@@ -19,12 +20,14 @@ class BaseModel:
             self.id = str(uuid4())
             self.created_at = datetime.utcnow()
             self.updated_at = datetime.utcnow()
+            models.storage.new(self)
 
     def save(self):
         """
         
         """
         self.updated_at = datetime.utcnow()
+        models.storage.save
 
    # def to_dict(self):
     #    """
