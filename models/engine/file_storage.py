@@ -1,45 +1,46 @@
 #!/usr/bin/python3
 import json
 import os
-from models.base_model import BaseModel
 
-class FileStorage():
-    __file_path = "file.json"
-    __objects = {}
-    
-    
+
+class FileStorage:
+    """serializes instances to a JSON file & deserializes back to instances"""
+
+    __file_path = "file.json"  # Path to the JSON file
+    __objects = {}  # Dictionary to store all objects by <class name>.id
+
     def new(self, obj):
-        """
-        
-        """
-
-        key = "{}.{}".format( obj.__class__.__name__, obj.id)
-        
-        FileStorage.__objects[key] = obj
-
-
+        """Sets in __objects the obj with key <obj class name>.id"""
+        key = obj.__class__.__name__ + '.' + obj.id
+        self.__objects[key] = obj
 
     def all(self):
-        """
-
-        """
+        """Returns the dictionary __objects."""
         return FileStorage.__objects
-    
+
     def save(self):
-        """Serializes objects to JSON file."""
-        with open(FileStorage.__file_path,'w', encoding="utf-8") as f:
-            json.dump(FileStorage.__objects, f)
-            
+        """Serializes __objects to
+ a JSON file (path: __file_path)"""
+
+        obj_dict = {}
+        for key in self.__objects:
+            obj_dict[key] = self.__objects[key].to_dict()
+        with open(self.__file_path, "w", encoding='utf8') as f:
+            json.dump(obj_dict, f)
+
     def reload(self):
-        """Deserializes JSON file to populate objects."""
-        if os.path.isfile(FileStorage.__file_path):
-            with open(FileStorage.__file_path, "r", encoding="utf-8") as f:
+        """
+        Deserializes the JSON file to __objects (only if the JSON file
+        (__file_path) exists; otherwise, do nothing. If the file doesn't
+        exist, no exception should be raised).
+        """
+        if os.path.isfile(self.__file_path):
+            with open(self.__file_path, "r", encoding='utf8') as f:
+                data = json.load(f)
                 try:
-                    FileStorage.__objects = json.load(f)
-                    for key, value in FileStorage.__objects.items():
-                        class_name, obj_id = key.split('.')
+                    for key, value in data.items():
+                        class_name, obj.id = key.split('.')
                         cls = eval(class_name)
                         instance = cls(**value)
-                        FileStorage.__objects[key] = instance
-                except Exception:
-                    pass 
+                        self.__objects[key] = instance
+                except: pass
